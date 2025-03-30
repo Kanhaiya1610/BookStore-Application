@@ -30,8 +30,13 @@ CREATE TABLE IF NOT EXISTS books (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- First delete from user_roles to handle foreign key constraint
+DELETE FROM user_roles;
+
+-- Then delete from roles
 DELETE FROM roles;
 
-INSERT INTO roles (name) VALUES ('ROLE_USER');
-INSERT INTO roles (name) VALUES ('ROLE_MODERATOR');
-INSERT INTO roles (name) VALUES ('ROLE_ADMIN'); 
+-- Now insert the roles
+INSERT INTO roles (name) VALUES ('ROLE_USER') ON CONFLICT DO NOTHING;
+INSERT INTO roles (name) VALUES ('ROLE_MODERATOR') ON CONFLICT DO NOTHING;
+INSERT INTO roles (name) VALUES ('ROLE_ADMIN') ON CONFLICT DO NOTHING; 
