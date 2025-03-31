@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import io.jsonwebtoken.*;
+import java.security.Key;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +23,15 @@ public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
     private final JwtConfig jwtConfig;
     private final UserDetailsServiceImpl userDetailsService;
+
+    private Key getSigningKey() {
+        String secret = jwtConfig.getJwtSecret();
+        if (secret == null || secret.isEmpty()) {
+            throw new IllegalStateException("JWT secret key is not configured");
+        }
+        byte[] keyBytes = Base64.getDecoder().decode(secret);
+        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
+    }
 
     public String getJwtFromCookies(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, "jwt");
@@ -40,7 +52,7 @@ public class JwtUtils {
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(jwtConfig.getJwtSecret())
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -50,7 +62,7 @@ public class JwtUtils {
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(jwtConfig.getJwtSecret())
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(authToken);
             return true;
@@ -73,7 +85,7 @@ public class JwtUtils {
                 .setSubject(username)
                 .setIssuedAt(new java.util.Date())
                 .setExpiration(new java.util.Date((new java.util.Date()).getTime() + jwtConfig.getJwtExpirationMs()))
-                .signWith(SignatureAlgorithm.HS512, jwtConfig.getJwtSecret())
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 } 
