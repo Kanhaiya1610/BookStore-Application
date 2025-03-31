@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
         description = "Complete REST API documentation for BookStore Application",
         contact = @Contact(
             name = "BookStore API Support",
-            email = "support@bookstore.com"
+            email = "agarwalkanhaiya070@gmail.com"
         )
     )
 )
