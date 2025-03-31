@@ -1,202 +1,253 @@
-# BookStore Application - User Manual
+# BookStore API User Manual
 
-## Welcome to BookStore! 
+## Introduction
 
-This guide will help you use our online bookstore application. You can browse books, search for specific titles, and manage your book collection.
-
-## How to Access the Application
-
-1. Open your web browser (Chrome, Firefox, etc.)
-2. Enter this address: `http://your-ip-address:8080`
-   - Your administrator will provide you with the correct IP address
-   - Example: `http://192.168.1.100:8080`
+Welcome to the BookStore API User Manual. This guide will help you understand how to use the BookStore API effectively. The API provides a secure and efficient way to manage books in a bookstore system.
 
 ## Getting Started
 
-### Step 1: Register
-1. Open this URL in your browser:
-```
-http://your-ip-address:8080/api/auth/signup
-```
-2. Fill in your details:
-   - Username (at least 3 characters)
-   - Email (must be valid format)
-   - Password (at least 6 characters)
-3. Click Submit
+### 1. Accessing the API
 
-### Step 2: Login
-1. Open this URL:
-```
-http://your-ip-address:8080/api/auth/signin
-```
-2. Enter your username and password
-3. After successful login, you'll be redirected to the main page
+1. Open your web browser
+2. Go to `https://your-koyeb-app-url.com/swagger-ui.html`
+3. You'll see the Swagger UI interface with all available APIs
+4. The interface is organized by categories:
+   - Authentication
+   - Book Management
+   - Admin Operations
 
-## Using the Application
+### 2. User Registration
 
-### View All Books
-```
-http://your-ip-address:8080/api/books
-```
-- Add `?page=0&size=10` to see first 10 books
-- Change page number to see more books
-
-### Search Books
-1. By Title:
-```
-http://your-ip-address:8080/api/books/search?title=Harry Potter
-```
-
-2. By Author:
-```
-http://your-ip-address:8080/api/books/author/J.K. Rowling
-```
-
-3. By Category:
-```
-http://your-ip-address:8080/api/books/category/Fantasy
-```
-
-### Filter Books
-To find books with specific criteria:
-```
-http://your-ip-address:8080/api/books/filter?category=Fantasy&minRating=4.5
-```
-
-## Tips for Using URLs
-- Replace spaces with %20 in URLs
-  - Instead of "Harry Potter", use "Harry%20Potter"
-- Use correct spelling and capitalization
-- Don't use special characters in search
-
-## Common Issues
-
-### Can't Access the Site
-- Check your internet connection
-- Verify the IP address with your administrator
-- Make sure you're using the correct port number
-
-### Search Not Working
-- Check spelling
-- Use simpler search terms
-- Make sure you're logged in
-
-### Login Issues
-- Make sure caps lock is off
-- Use correct username/password
-- Contact admin if you forgot password
-
-## Need Help?
-Contact your administrator if you:
-- Can't access the website
-- Can't login
-- See error messages
-- Need to reset password
-
-## Security Tips
-1. Never share your password
-2. Use a strong password
-3. Don't use the application on public computers
-4. Always logout when done
-
-## For Remote Access
-1. Make sure you have:
-   - The correct website address
-   - A stable internet connection
-2. If you can't connect:
-   - Check your internet
-   - Contact your administrator
-
-Remember: This is a secure application. If you can't access something, you might need to login first or contact your administrator for permissions.
-
-## Special Section for Administrators
-
-### Understanding User Roles
-There are three types of roles in the system:
-1. `ROLE_USER`: Can only view and search books
-2. `ROLE_MODERATOR`: Can create and update books
-3. `ROLE_ADMIN`: Full access (create, update, delete books and manage users)
-
-### How to Create Users with Different Roles
-1. **Create Regular User**:
-```
-http://your-ip-address:8080/api/auth/signup
-```
-Body:
+1. Click on the `/api/auth/signup` endpoint
+2. Click "Try it out"
+3. Enter your details:
 ```json
 {
-  "username": "normaluser",
-  "email": "user@example.com",
-  "password": "password123",
-  "roles": ["user"]
+  "username": "your_username",
+  "email": "your_email@example.com",
+  "password": "your_password",
+  "roles": ["ROLE_USER"]
 }
 ```
+4. Click "Execute"
 
-2. **Create Moderator**:
+**Important Notes:**
+- Username must be 3-20 characters long
+- Email must be valid and unique
+- Password must be 6-40 characters long
+- Role must be one of: "ROLE_USER", "ROLE_MODERATOR", "ROLE_ADMIN"
+
+### 3. User Login
+
+1. Click on the `/api/auth/signin` endpoint
+2. Click "Try it out"
+3. Enter your credentials:
 ```json
 {
-  "username": "moduser",
-  "email": "mod@example.com",
-  "password": "password123",
-  "roles": ["mod"]
+  "username": "your_username",
+  "password": "your_password"
 }
 ```
+4. Click "Execute"
+5. Copy the JWT token from the response
 
-3. **Create Another Admin**:
+**Security Tips:**
+- Keep your password secure
+- Don't share your JWT token
+- Log out when done using the `/api/auth/signout` endpoint
+
+### 4. Using the API
+
+#### Authorizing Requests
+
+1. Click the "Authorize" button at the top of the page
+2. Enter: `Bearer your_jwt_token`
+3. Click "Authorize"
+
+#### Managing Books
+
+##### Viewing Books
+
+1. Click on the `/api/books` endpoint
+2. Click "Try it out"
+3. You can use these parameters:
+   - `page`: Page number (default: 0)
+   - `size`: Items per page (default: 10)
+   - `sort`: Sort field and direction (e.g., "title,asc")
+4. Click "Execute"
+
+##### Searching Books
+
+1. Click on the `/api/books/search` endpoint
+2. Click "Try it out"
+3. Enter search parameters:
+   - `title`: Book title to search
+   - `page`: Page number
+   - `size`: Items per page
+4. Click "Execute"
+
+##### Filtering Books
+
+1. Click on the `/api/books/filter` endpoint
+2. Click "Try it out"
+3. Enter filter parameters:
+   - `author`: Filter by author
+   - `category`: Filter by category
+   - `minRating`: Minimum rating (0-5)
+4. Click "Execute"
+
+##### Adding a Book
+
+1. Click on the `/api/books` endpoint
+2. Click "Try it out"
+3. Enter book details:
 ```json
 {
-  "username": "adminuser",
-  "email": "admin@example.com",
-  "password": "password123",
-  "roles": ["admin"]
+  "title": "Book Title",
+  "author": "Author Name",
+  "isbn": "1234567890123",
+  "price": 99.99,
+  "category": "Fiction",
+  "description": "Book Description",
+  "rating": 4.5
 }
 ```
+4. Click "Execute"
 
-4. **Create User with Multiple Roles**:
-```json
-{
-  "username": "poweruser",
-  "email": "power@example.com",
-  "password": "password123",
-  "roles": ["user", "mod"]
-}
-```
+**Validation Rules:**
+- Title: Required, max 100 characters
+- Author: Required, max 100 characters
+- ISBN: Required, 13 digits
+- Price: Required, must be positive
+- Category: Required, max 50 characters
+- Rating: Required, between 0-5
 
-### Role Permissions
-1. **ROLE_USER can**:
-   - View all books
-   - Search books
-   - Filter books
-   - View book details
+##### Updating a Book
 
-2. **ROLE_MODERATOR can do everything ROLE_USER can, plus**:
-   - Add new books
-   - Update existing books
-   - Manage book inventory
+1. Click on the `/api/books/{id}` endpoint
+2. Click "Try it out"
+3. Enter the book ID
+4. Enter updated book details
+5. Click "Execute"
 
-3. **ROLE_ADMIN can do everything ROLE_MODERATOR can, plus**:
-   - Delete books
-   - Manage users
-   - View system logs
+##### Deleting a Book
 
-### Common Admin Tasks
-1. **To upgrade a user to moderator**:
-   - Create a new account with mod role
-   - Share credentials with user
+1. Click on the `/api/books/{id}` endpoint
+2. Click "Try it out"
+3. Enter the book ID
+4. Click "Execute"
 
-2. **To give full access**:
-   - Create new account with admin role
-   - Share credentials with user
+## User Roles and Permissions
 
-3. **Best Practices**:
-   - Create separate accounts for different roles
-   - Don't share admin credentials
-   - Regularly review user accounts
-   - Remove access when no longer needed
+### Regular User (ROLE_USER)
+- View all books
+- Search books by title
+- Filter books by:
+  - Author
+  - Category
+  - Rating
+- Cannot modify books
 
-### Security Guidelines for Admins
-1. Always create users with minimum required roles
-2. Regularly audit user accounts
-3. Use strong passwords for admin accounts
-4. Monitor system logs for suspicious activity
-5. Keep the admin credentials secure 
+### Moderator (ROLE_MODERATOR)
+- All USER permissions
+- Create new books
+- Update existing books
+- Cannot delete books
+
+### Administrator (ROLE_ADMIN)
+- All MODERATOR permissions
+- Delete books
+- View all users
+- Delete users
+- Full system access
+
+## Common Issues and Solutions
+
+### 1. Authentication Issues
+
+**Problem**: "Unauthorized" error
+**Solution**: 
+1. Make sure you're logged in
+2. Check if your token is valid
+3. Ensure you've added the token in the "Authorize" section
+4. Try logging in again
+
+**Problem**: "Token expired" error
+**Solution**:
+1. Log out using `/api/auth/signout`
+2. Log in again to get a new token
+3. Update the authorization header
+
+### 2. Permission Issues
+
+**Problem**: "Forbidden" error
+**Solution**:
+1. Check your user role
+2. Ensure you have the required permissions
+3. Contact your administrator for role upgrade
+4. Try using a different endpoint that matches your role
+
+### 3. Validation Issues
+
+**Problem**: "Bad Request" error
+**Solution**:
+1. Check the error message for specific validation failures
+2. Ensure all required fields are filled
+3. Verify data formats:
+   - ISBN: 13 digits
+   - Price: Positive number
+   - Rating: 0-5
+   - Email: Valid format
+
+### 4. Connection Issues
+
+**Problem**: "Failed to fetch" error
+**Solution**:
+1. Check your internet connection
+2. Verify the API URL is correct
+3. Try refreshing the page
+4. Clear browser cache
+5. Check if the service is running
+
+## Best Practices
+
+### 1. Security
+- Use strong passwords
+- Don't share your JWT token
+- Log out when done
+- Use HTTPS for all requests
+- Keep your browser updated
+
+### 2. Data Entry
+- Use valid ISBN numbers
+- Enter prices in correct format
+- Provide complete book details
+- Use appropriate categories
+- Give accurate ratings
+
+### 3. Performance
+- Use search and filter options
+- Implement pagination for large datasets
+- Cache frequently accessed data
+- Use appropriate page sizes
+- Sort data when needed
+
+### 4. Error Handling
+- Read error messages carefully
+- Check validation rules
+- Verify your permissions
+- Try alternative approaches
+- Report issues to administrators
+
+## Support
+
+If you encounter any issues:
+1. Check the error message
+2. Review the documentation
+3. Try the common solutions
+4. Contact your system administrator
+5. Report bugs to the development team
+
+## Updates
+
+This manual will be updated as new features are added. Check regularly for updates. 

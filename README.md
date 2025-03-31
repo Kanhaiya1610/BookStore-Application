@@ -1,211 +1,273 @@
-# BookStore Management System
+# BookStore API
 
-A Spring Boot-based RESTful API for managing a bookstore, featuring user authentication, role-based access control, and comprehensive book management capabilities.
+A comprehensive Spring Boot REST API for managing a bookstore with JWT authentication, role-based access control, and Swagger documentation.
 
 ## Features
 
-- User Authentication (JWT-based)
-- Role-Based Access Control (User, Moderator, Admin)
-- Book Management (CRUD Operations)
-- Advanced Book Filtering and Search
-- Pagination and Sorting Support
-- Swagger UI Documentation
+- 🔐 JWT Authentication with Cookie-based token storage
+- 👥 Role-based Access Control (USER, MODERATOR, ADMIN)
+- 📚 CRUD operations for Books with advanced filtering
+- 📝 Swagger UI Documentation with OpenAPI 3.0
+- 🗄️ PostgreSQL Database with JPA/Hibernate
+- 🌐 CORS Support with configurable origins
+- 🔧 Environment Variable Configuration
+- 📊 Pagination support for all list operations
+- 🔍 Advanced search and filtering capabilities
+- ⚡ Exception handling with detailed error messages
 
-## Technologies Used
+## Tech Stack
 
 - Java 17
-- Spring Boot 3.x
+- Spring Boot 3.2.3
 - Spring Security with JWT
+- Spring Data JPA
 - PostgreSQL
 - Maven
-- Swagger UI (OpenAPI)
+- Swagger/OpenAPI 3.0
+- Lombok
+- JJWT (JSON Web Token)
+
+## Project Structure
+
+```
+src/main/java/com/bookstore/
+├── admin/           # Admin-specific operations
+├── config/          # Configuration classes
+├── controller/      # REST controllers
+├── dto/            # Data Transfer Objects
+├── exception/      # Custom exceptions
+├── model/          # Entity classes
+├── repository/     # JPA repositories
+├── security/       # Security configurations
+└── service/        # Business logic
+```
 
 ## Prerequisites
 
-- Java 17 or higher
-- Maven
-- PostgreSQL
-- Your favorite IDE (IntelliJ IDEA recommended)
+- Java 17 or later
+- Maven 3.6 or later
+- PostgreSQL 12 or later
+- Git
 
-## Setup Instructions
+## Getting Started
 
-1. **Clone the Repository**
+1. **Clone the repository**
 ```bash
-git clone <repository-url>
-cd bookstore
+git clone https://github.com/yourusername/bookstore-api.git
+cd bookstore-api
 ```
 
-2. **Database Setup**
-```sql
-CREATE DATABASE bookstore;
-```
-
-3. **Configure Application**
-Update `src/main/resources/application.properties`:
+2. **Configure Database**
+- Create a PostgreSQL database
+- Update `application.properties` with your database credentials:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/bookstore
 spring.datasource.username=your_username
 spring.datasource.password=your_password
 ```
 
-4. **Build and Run**
+3. **Build the application**
 ```bash
-mvn clean install
-mvn spring-boot:run
+mvn clean package
+```
+
+4. **Run the application**
+```bash
+java -jar target/bookstore-api-0.0.1-SNAPSHOT.jar
 ```
 
 5. **Access Swagger UI**
-```
-http://localhost:8080/swagger-ui.html
-```
+- Open `http://localhost:8080/swagger-ui.html` in your browser
 
 ## API Documentation
 
-### Authentication APIs
+### Authentication Endpoints
 
-1. **Register User**
-- Endpoint: `POST /api/auth/signup`
-- Description: Register new user with roles
-- Access: Public
-```json
+#### Signup
+```http
+POST /api/auth/signup
+Content-Type: application/json
+
 {
-  "username": "user123",
-  "email": "user@example.com",
-  "password": "password123",
-  "roles": ["user"]
-}
-```
-
-2. **Login**
-- Endpoint: `POST /api/auth/signin`
-- Description: Authenticate user and get JWT token
-- Access: Public
-```json
-{
-  "username": "user123",
-  "password": "password123"
-}
-```
-
-### Book Management APIs
-
-1. **Create Book**
-- Endpoint: `POST /api/books`
-- Description: Add new book
-- Access: ADMIN, MODERATOR
-```json
-{
-  "title": "Book Title",
-  "author": "Author Name",
-  "category": "Category",
-  "price": 299.99,
-  "rating": 4.5,
-  "publishedDate": "2024-03-29"
-}
-```
-
-2. **Get All Books**
-- Endpoint: `GET /api/books`
-- Description: Get paginated list of books
-- Access: All authenticated users
-- Parameters: page, size, sort
-
-3. **Get Book by ID**
-- Endpoint: `GET /api/books/{id}`
-- Description: Get specific book details
-- Access: All authenticated users
-
-4. **Update Book**
-- Endpoint: `PUT /api/books/{id}`
-- Description: Update existing book
-- Access: ADMIN, MODERATOR
-
-5. **Delete Book**
-- Endpoint: `DELETE /api/books/{id}`
-- Description: Delete book
-- Access: ADMIN
-
-### Search and Filter APIs
-
-1. **Search Books**
-- Endpoint: `GET /api/books/search`
-- Description: Search books by title
-- Parameter: title
-- Access: All authenticated users
-
-2. **Filter Books**
-- Endpoint: `GET /api/books/filter`
-- Description: Filter books by multiple criteria
-- Parameters: author, category, minRating
-- Access: All authenticated users
-
-3. **Get Books by Category**
-- Endpoint: `GET /api/books/category/{category}`
-- Description: Get books by category
-- Access: All authenticated users
-
-4. **Get Books by Author**
-- Endpoint: `GET /api/books/author/{author}`
-- Description: Get books by author
-- Access: All authenticated users
-
-5. **Get Books by Rating**
-- Endpoint: `GET /api/books/rating/{rating}`
-- Description: Get books with rating >= specified value
-- Access: All authenticated users
-
-## Role-Based Access
-
-- **ROLE_USER**: Can view books and use search/filter
-- **ROLE_MODERATOR**: Can create and update books
-- **ROLE_ADMIN**: Full access including deletion
-
-## Testing Steps
-
-1. **Create Admin User**
-```json
-{
-  "username": "admin123",
+  "username": "admin123456",
   "email": "admin@example.com",
-  "password": "admin123",
-  "roles": ["admin"]
+  "password": "ADMIN123456",
+  "roles": ["ROLE_ADMIN"]
 }
 ```
 
-2. **Login and Get Token**
-```json
+#### Signin
+```http
+POST /api/auth/signin
+Content-Type: application/json
+
 {
-  "username": "admin123",
-  "password": "admin123"
+  "username": "admin123456",
+  "password": "ADMIN123456"
 }
 ```
 
-3. **Use Token in Swagger UI**
-- Click "Authorize" button
-- Enter: Bearer <your_token>
-- Test APIs
+### Book Endpoints
 
-## Common Issues and Solutions
+#### Create Book
+```http
+POST /api/books
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
 
-1. **JWT Token Issues**
-- Ensure token is prefixed with "Bearer "
-- Check token expiration
-- Verify correct roles assigned
+{
+  "title": "Test Book",
+  "author": "Test Author",
+  "isbn": "1234567890123",
+  "price": 99.99,
+  "category": "Fiction",
+  "description": "Test Description",
+  "rating": 4.5
+}
+```
 
-2. **Database Issues**
-- Verify PostgreSQL is running
-- Check database credentials
-- Ensure tables are created
+#### Get All Books (with pagination)
+```http
+GET /api/books?page=0&size=10&sort=title,asc
+Authorization: Bearer <jwt_token>
+```
 
-3. **Permission Issues**
-- Verify user has correct roles
-- Check JWT token includes required roles
-- Ensure using admin token for privileged operations
+#### Search Books
+```http
+GET /api/books/search?title=Harry&page=0&size=10
+Authorization: Bearer <jwt_token>
+```
+
+#### Filter Books
+```http
+GET /api/books/filter?author=Rowling&category=Fiction&minRating=4.5
+Authorization: Bearer <jwt_token>
+```
+
+### Admin Endpoints
+
+#### Get All Users
+```http
+GET /api/admin/users
+Authorization: Bearer <jwt_token>
+```
+
+#### Delete User
+```http
+DELETE /api/admin/users/{username}
+Authorization: Bearer <jwt_token>
+```
+
+## Role-based Access Control
+
+### Regular User (ROLE_USER)
+- View all books
+- Search books
+- Filter books by various criteria
+- Cannot modify books
+
+### Moderator (ROLE_MODERATOR)
+- All USER permissions
+- Create new books
+- Update existing books
+- Cannot delete books
+
+### Administrator (ROLE_ADMIN)
+- All MODERATOR permissions
+- Delete books
+- Manage users (view and delete)
+- Full system access
+
+## Environment Variables
+
+```properties
+# Server Configuration
+PORT=8080
+
+# Database Configuration
+DATABASE_URL=jdbc:postgresql://your-database-url:5432/your-database
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
+
+# JWT Configuration
+JWT_SECRET=your-jwt-secret
+JWT_EXPIRATION_MS=86400000
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS=*
+```
+
+## Security Features
+
+- JWT-based authentication
+- Password encryption with BCrypt
+- Role-based authorization
+- CORS protection
+- Input validation
+- Exception handling
+- Secure cookie handling
+
+## Error Handling
+
+The API provides detailed error messages for:
+- Authentication failures
+- Authorization errors
+- Resource not found
+- Validation errors
+- Bad requests
+- Server errors
+
+## Database Schema
+
+### Users Table
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(120) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Books Table
+```sql
+CREATE TABLE books (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    isbn VARCHAR(13) UNIQUE,
+    price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    description TEXT,
+    rating DECIMAL(3,2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Deployment
+
+1. **Build the application**
+```bash
+mvn clean package -DskipTests
+```
+
+2. **Deploy to Koyeb**
+- Push to GitHub
+- Connect repository to Koyeb
+- Set environment variables in Koyeb dashboard
+- Configure database connection
+- Set up SSL certificates
 
 ## Contributing
 
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details 
+This project is licensed under the Apache License 2.0 - see the LICENSE file for details. 

@@ -1,8 +1,14 @@
+-- Pehle roles table drop karein (if exists)
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS roles;
+
+-- Ab roles table create karein with UNIQUE constraint
 CREATE TABLE IF NOT EXISTS roles (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(20) NOT NULL UNIQUE
+    name VARCHAR(20) UNIQUE NOT NULL
 );
 
+-- Baki tables create karein
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(20) NOT NULL UNIQUE,
@@ -21,7 +27,7 @@ CREATE TABLE IF NOT EXISTS books (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
-    isbn VARCHAR(13) NOT NULL UNIQUE,
+    isbn VARCHAR(13) UNIQUE,
     price DECIMAL(10,2) NOT NULL,
     category VARCHAR(50) NOT NULL,
     description TEXT,
@@ -30,13 +36,7 @@ CREATE TABLE IF NOT EXISTS books (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- First delete from user_roles to handle foreign key constraint
-DELETE FROM user_roles;
-
--- Then delete from roles
-DELETE FROM roles;
-
--- Now insert the roles
+-- Roles insert karein
 INSERT INTO roles (name) VALUES ('ROLE_USER') ON CONFLICT (name) DO NOTHING;
 INSERT INTO roles (name) VALUES ('ROLE_MODERATOR') ON CONFLICT (name) DO NOTHING;
 INSERT INTO roles (name) VALUES ('ROLE_ADMIN') ON CONFLICT (name) DO NOTHING; 
