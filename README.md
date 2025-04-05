@@ -53,7 +53,7 @@ src/main/java/com/bookstore/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/bookstore-api.git
+git clone https://github.com/Kanhaiya1610/BookStore-Application.git
 cd bookstore-api
 ```
 
